@@ -9,6 +9,8 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AuthLayout from '@/layouts/auth-layout';
+import { AuthPolicyText } from '@/components/auth-policy-text';
+import { AuthSocialiteButtonGroup } from '@/components/auth-socialite-button-group';
 
 type LoginForm = {
     email: string;
@@ -96,6 +98,14 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                     </Button>
                 </div>
 
+                <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
+                    <span className="relative z-10 bg-background px-2 text-muted-foreground">
+                      Or continue with
+                    </span>
+                </div>
+
+                <AuthSocialiteButtonGroup />
+
                 <div className="text-muted-foreground text-center text-sm">
                     Don't have an account?{' '}
                     <TextLink href={route('register')} tabIndex={5}>
@@ -105,6 +115,8 @@ export default function Login({ status, canResetPassword }: LoginProps) {
             </form>
 
             {status && <div className="mb-4 text-center text-sm font-medium text-green-600">{status}</div>}
+
+            <AuthPolicyText />
         </AuthLayout>
     );
 }

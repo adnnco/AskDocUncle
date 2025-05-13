@@ -8,6 +8,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AuthLayout from '@/layouts/auth-layout';
+import { AuthPolicyText } from '@/components/auth-policy-text';
+import { AuthSocialiteButtonGroup } from '@/components/auth-socialite-button-group';
 
 type RegisterForm = {
     name: string;
@@ -34,6 +36,7 @@ export default function Register() {
     return (
         <AuthLayout title="Create an account" description="Enter your details below to create your account">
             <Head title="Register" />
+
             <form className="flex flex-col gap-6" onSubmit={submit}>
                 <div className="grid gap-6">
                     <div className="grid gap-2">
@@ -107,6 +110,14 @@ export default function Register() {
                     </Button>
                 </div>
 
+                <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
+                    <span className="relative z-10 bg-background px-2 text-muted-foreground">
+                      Or continue with
+                    </span>
+                </div>
+
+                <AuthSocialiteButtonGroup />
+
                 <div className="text-muted-foreground text-center text-sm">
                     Already have an account?{' '}
                     <TextLink href={route('login')} tabIndex={6}>
@@ -114,6 +125,8 @@ export default function Register() {
                     </TextLink>
                 </div>
             </form>
+
+            <AuthPolicyText />
         </AuthLayout>
     );
 }
