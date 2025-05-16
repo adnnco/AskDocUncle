@@ -3,7 +3,7 @@ import AppLayout from '@/layouts/app-layout';
 import SettingsLayout from '@/layouts/settings/layout';
 import { type BreadcrumbItem } from '@/types';
 import { Transition } from '@headlessui/react';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, useForm, usePage } from '@inertiajs/react';
 import { FormEventHandler, useRef } from 'react';
 
 import HeadingSmall from '@/components/heading-small';
@@ -18,9 +18,17 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
+interface PasswordProps {
+    requiresCurrentPassword: boolean;
+    isSocialUser: boolean;
+    hasPassword: boolean;
+    [key: string]: unknown;
+}
+
 export default function Password() {
     const passwordInput = useRef<HTMLInputElement>(null);
     const currentPasswordInput = useRef<HTMLInputElement>(null);
+    const { requiresCurrentPassword, isSocialUser, hasPassword } = usePage<PasswordProps>().props;
 
     const { data, setData, errors, put, reset, processing, recentlySuccessful } = useForm({
         current_password: '',
@@ -54,25 +62,43 @@ export default function Password() {
 
             <SettingsLayout>
                 <div className="space-y-6">
-                    <HeadingSmall title="Update password" description="Ensure your account is using a long, random password to stay secure" />
+                    <HeadingSmall
+                        title={hasPassword ? "Update password" : "Set password"}
+                        description={
+                            isSocialUser
+                                ? "Set a password to enable both social and regular login for your account"
+                                : "Ensure your account is using a long, random password to stay secure"
+                        }
+                    />
 
                     <form onSubmit={updatePassword} className="space-y-6">
-                        <div className="grid gap-2">
-                            <Label htmlFor="current_password">Current password</Label>
+                        {(requiresCurrentPassword || (isSocialUser && hasPassword)) && (
+                            <div className="grid gap-2">
+                                <Label htmlFor="current_password">
+                                    {requiresCurrentPassword ? "Current password" : "Current password (optional)"}
+                                </Label>
 
-                            <Input
-                                id="current_password"
-                                ref={currentPasswordInput}
-                                value={data.current_password}
-                                onChange={(e) => setData('current_password', e.target.value)}
-                                type="password"
-                                className="mt-1 block w-full"
-                                autoComplete="current-password"
-                                placeholder="Current password"
-                            />
+                                <Input
+                                    id="current_password"
+                                    ref={currentPasswordInput}
+                                    value={data.current_password}
+                                    onChange={(e) => setData('current_password', e.target.value)}
+                                    type="password"
+                                    className="mt-1 block w-full"
+                                    autoComplete="current-password"
+                                    placeholder="Current password"
+                                    required={requiresCurrentPassword}
+                                />
 
-                            <InputError message={errors.current_password} />
-                        </div>
+                                <InputError message={errors.current_password} />
+
+                                {isSocialUser && hasPassword && (
+                                    <p className="text-sm text-muted-foreground">
+                                        As a social login user, you can change your password without entering your current password.
+                                    </p>
+                                )}
+                            </div>
+                        )}
 
                         <div className="grid gap-2">
                             <Label htmlFor="password">New password</Label>

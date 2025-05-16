@@ -48,4 +48,24 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    /**
+     * Check if the user is a social login user.
+     *
+     * @return bool
+     */
+    public function isSocialUser(): bool
+    {
+        return !empty($this->provider);
+    }
+
+    /**
+     * Check if the user has a password set.
+     *
+     * @return bool
+     */
+    public function hasPassword(): bool
+    {
+        return !empty($this->password);
+    }
 }
